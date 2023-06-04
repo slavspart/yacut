@@ -32,11 +32,3 @@ class URLMap(db.Model):
             setattr(self, 'short', data[short_key])
         else:
             self.get_unique_short_id()
-
-        # # Для каждого поля модели, которое можно заполнить...
-        # for field in ['original_link', 'custom_id',]:
-        #     # ...выполняется проверка: есть ли ключ с таким же именем в словаре
-        #     if field in data:
-        #         # Если есть — добавляем значение из словаря
-        #         # в соответствующее поле объекта модели:
-        #         setattr(self, field, data[field])
