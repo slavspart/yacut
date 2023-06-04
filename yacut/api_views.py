@@ -15,16 +15,17 @@ def get_url(short):
     if url is None:
         raise InvalidAPIUsage('Указанный id не найден', 404)
     # domain = urlparse(request.base_url).scheme + '://' + urlparse(request.base_url).netloc
-    response_dict =url.to_dict()
-    del(response_dict)['short_link']
+    response_dict = url.to_dict()
+    del (response_dict)['short_link']
     # response_dict['short_link'] = urlparse(request.base_url).scheme + '://' + urlparse(request.base_url).netloc + '/' + url.short
     return jsonify(response_dict), 200
+
 
 @app.route('/api/id/', methods=['POST'])
 def add_url():
     try:
         data = request.get_json(force=True)
-    except BadRequest as e:
+    except BadRequest:
         raise InvalidAPIUsage("Отсутствует тело запроса", 400)
     if 'url' not in data:
         raise InvalidAPIUsage('"url" является обязательным полем!', 400)
@@ -36,18 +37,15 @@ def add_url():
     url.from_dict(data, 'url', 'custom_id')
     db.session.add(url)
     db.session.commit()
-    domain = urlparse(request.base_url).scheme + '://' + urlparse(request.base_url).netloc
     response_dict = url.to_dict()
     response_dict['short_link'] = urlparse(request.base_url).scheme + '://' + urlparse(request.base_url).netloc + '/' + url.short
-    return jsonify(response_dict), 201 
-
-
+    return jsonify(response_dict), 201
 
 
 # def update_opinion(id):
 #     data = request.get_json(force=True)
 #     if (
-#         'text' in data and 
+#         'text' in data and
 #         Opinion.query.filter_by(text=data['text']).first() is not None
 #     ):
 #         raise InvalidAPIUsage('Такое мнение уже есть в базе данных')
@@ -59,7 +57,7 @@ def add_url():
 #     opinion.text = data.get('text', opinion.text)
 #     opinion.source = data.get('source', opinion.source)
 #     opinion.added_by = data.get('added_by', opinion.added_by)
-#     db.session.commit()  
+#     db.session.commit()
 #     return jsonify({'opinion': opinion.to_dict()}), 201
 
 
@@ -76,12 +74,8 @@ def add_url():
 # @app.route('/api/opinions/', methods=['GET'])
 # def get_opinions():
 #     # Запрашивается список объектов
-#     opinions = Opinion.query.all()  
-#     # Поочерёдно сериализуется каждый объект, 
+#     opinions = Opinion.query.all()
+#     # Поочерёдно сериализуется каждый объект,
 #     # а потом все объекты помещаются в список opinions_list
 #     opinions_list = [opinion.to_dict() for opinion in opinions]
-#     return jsonify({'opinions': opinions_list}), 200 
-
-
-
-
+#     return jsonify({'opinions': opinions_list}), 200

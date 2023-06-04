@@ -1,6 +1,6 @@
 from urllib.parse import urljoin, urlparse
 
-from flask import abort, flash, Markup, redirect, render_template, request
+from flask import flash, Markup, redirect, render_template, request
 
 from . import app, db
 from yacut.forms import LinkForm
@@ -20,28 +20,21 @@ def index_view():
             return render_template('index.html', form=form)
         url = URLMap()
         url.from_dict(form.data, 'original_link', 'custom_id')
-        
-            
+
         db.session.add(url)
         db.session.commit()
         domain = urlparse(request.base_url).scheme + '://' + urlparse(request.base_url).netloc
-        new_link_message = flash(
+        flash(
             Markup(
-            f'Ваша новая ссылка готова: <a href="{urljoin(domain, url.short)}"> {urljoin(domain, url.short)}</a>'),
+                f'Ваша новая ссылка готова: <a href="{urljoin(domain, url.short)}"> {urljoin(domain, url.short)}</a>'),
             'new_link_message'
-            )
-        return render_template ('index.html', form = form) #new_link_message=new_link_message)
-        repeat_message = flash(
-                f'Имя {form.data["custom_id"]} уже занято!',
-                'repeat_message'
-                )
-            
-        
-    return render_template('index.html', form = form)
-    # abort(404)
+        )
+        return render_template('index.html', form=form)
+    return render_template('index.html', form=form)
+
 
 @app.route('/<string:short>')
 def redirect_to_original(short):
     url = URLMap.query.filter_by(short=short).first_or_404()
     print(url.id)
-    return redirect (url.original)
+    return redirect(url.original)
