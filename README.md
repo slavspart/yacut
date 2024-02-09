@@ -42,6 +42,12 @@ python3 -m venv venv
     source venv/scripts/activate
     ```
 
+Создать в корневой папке и наполнить содержимым файл .env:
+
+```
+echo -e "FLASK_APP=yacut\nFLASK_ENV=development\nDATABASE_URI=sqlite:///db.sqlite3\nSECRET_KEY=YOUR_SECRET_KEY" > .env
+```
+
 Установить зависимости из файла requirements.txt:
 
 ```
